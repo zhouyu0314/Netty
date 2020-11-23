@@ -15,10 +15,10 @@ public class NettyServerFrameHandler extends SimpleChannelInboundHandler<TextWeb
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
-        System.out.println("服务器端受到消息：" + msg.text());
+        System.out.println("服务器端收到消息：" + msg.text());
 
         //回复浏览器
-        ctx.writeAndFlush(new TextWebSocketFrame("服务器时间:" + sdf.format(new Date())) + "\t" + msg.text());
+        ctx.channel().writeAndFlush(new TextWebSocketFrame("服务器时间:" + sdf.format(new Date())) + "\t" + msg.text());
 
 
     }
