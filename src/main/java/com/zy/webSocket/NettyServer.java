@@ -1,8 +1,6 @@
 package com.zy.webSocket;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -12,14 +10,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import io.netty.util.CharsetUtil;
-
-import java.util.Scanner;
 
 public class NettyServer {
     public static void main(String[] args) throws Exception{
@@ -27,6 +21,7 @@ public class NettyServer {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
+            NettyServerFrameHandler nettyServerFrameHandler = new NettyServerFrameHandler();
             ServerBootstrap serverBootstrap = new ServerBootstrap().group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -62,24 +57,7 @@ public class NettyServer {
                         }
                     });
 
-
-
-
             ChannelFuture cf = serverBootstrap.bind(7000).sync();
-
-
-            //客户端输入信息
-            Scanner scanner = new Scanner(System.in);
-            while (scanner.hasNext()) {
-                String str = scanner.nextLine();
-                //发送至服务端
-                TextWebSocketFrame textWebSocketFrame = new TextWebSocketFrame(str);
-                ByteBuf byteBuf = Unpooled.copiedBuffer(textWebSocketFrame.text(), CharsetUtil.UTF_8);
-                cf.channel().writeAndFlush(new TextWebSocketFrame(byteBuf));
-            }
-
-
-
             cf.channel().closeFuture().sync();
 
 

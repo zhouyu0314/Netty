@@ -1,17 +1,14 @@
 package com.zy.webSocket;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,10 +30,20 @@ public class NettyServerFrameHandler extends SimpleChannelInboundHandler<TextWeb
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
         System.out.println("服务器端收到消息：" + msg.text());
         //回复浏览器
-        ByteBuf byteBuf = Unpooled.copiedBuffer("服务器时间:" + sdf.format(new Date()) + "\t" + msg.text(), CharsetUtil.UTF_8);
-        ctx.channel().writeAndFlush(new TextWebSocketFrame(byteBuf));
+        //ByteBuf byteBuf = Unpooled.copiedBuffer("服务器时间:" + sdf.format(new Date()) + "\t" + msg.text(), CharsetUtil.UTF_8);
+        //ctx.channel().writeAndFlush(new TextWebSocketFrame(byteBuf));
+        //ctx.channel().writeAndFlush(new TextWebSocketFrame("byteBuf"));
+        System.out.println("channelRead0"+  ctx.channel().id().asLongText());
+
 
     }
+
+//    public void write(String str){
+//
+//        ch.writeAndFlush(new TextWebSocketFrame(str));
+//    }
+
+
 
 
 
@@ -49,18 +56,21 @@ public class NettyServerFrameHandler extends SimpleChannelInboundHandler<TextWeb
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         //id表示唯一的值，LongText 是唯一的 ShortText不是唯一的
-        System.out.println("handlerAdded 被调用" + ctx.channel().id().asLongText());
-        System.out.println("handlerAdded 被调用" + ctx.channel().id().asShortText());
-
+        Channel channel = ctx.channel();
+        System.out.println("handlerAdded 被调用" + channel.id().asLongText());
+        System.out.println("handlerAdded 被调用" + channel.id().asShortText());
+        //当用户上线了 注册其通道
+        channelGroup.add(channel);
+        //返回用户的通道id
+        ctx.channel().writeAndFlush(new TextWebSocketFrame(channel.id().asLongText()));
     }
 
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("handlerRemoved 被调用" + ctx.channel().id().asLongText());
-//        users.remove(ctx.channel().id().asLongText());
-//        ByteBuf byteBuf = Unpooled.copiedBuffer(JSON.toJSONString(users), CharsetUtil.UTF_8);
-//        ctx.writeAndFlush(new TextWebSocketFrame(byteBuf));
+        String longTex = ctx.channel().id().asLongText();
+        System.out.println("handlerRemoved 被调用" + longTex);
+
     }
 
 
