@@ -30,7 +30,7 @@ public class NettyServer {
                     .channel(NioServerSocketChannel.class)//使用NioSocketChannel作为服务器的通道实现
                     .option(ChannelOption.SO_BACKLOG, 128)//设置线程队列得到连接个数
                     .childOption(ChannelOption.SO_KEEPALIVE, true)//设置保持活动连接状态
-                    .handler(null)//该handle对应的是bossGroup，如果不想在accept设置业务处理逻辑就不用写
+                   // .handler(null)//该handle对应的是bossGroup，如果不想在accept设置业务处理逻辑就不用写
                     .childHandler(new ChannelInitializer<SocketChannel>() {//创建一个通道初始化对象（匿名对象）该handler对应的是workerGroup
                 //给pipeline设置处理器
                 @Override
@@ -57,7 +57,7 @@ public class NettyServer {
              */
             cf.addListener(new ChannelFutureListener() {
                 @Override
-                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                public void operationComplete(ChannelFuture cf) throws Exception {
                     if (cf.isSuccess()) {
                         System.out.println("监听端口6668成功！");
                     } else {

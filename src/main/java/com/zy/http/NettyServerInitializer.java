@@ -16,6 +16,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = ch.pipeline();
 
         //加入一个netty 提供的httpServerCodec  codec -> {decoder}
+        //HttpServerCodec -> 编解码器
         pipeline.addLast("MyHttpServerCodec",new HttpServerCodec());
         //增加一个自定义的handler
         pipeline.addLast("MyNettyServerSimpleHandler",new NettyServerHandler());

@@ -22,9 +22,6 @@ public class NettyServerFrameHandler extends SimpleChannelInboundHandler<TextWeb
     private static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
 
-
-
-
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame msg) throws Exception {
@@ -34,7 +31,7 @@ public class NettyServerFrameHandler extends SimpleChannelInboundHandler<TextWeb
         //ctx.channel().writeAndFlush(new TextWebSocketFrame(byteBuf));
         //ctx.channel().writeAndFlush(new TextWebSocketFrame("byteBuf"));
         System.out.println("channelRead0"+  ctx.channel().id().asLongText());
-
+        ctx.channel().writeAndFlush(new TextWebSocketFrame(msg.text()));
 
     }
 

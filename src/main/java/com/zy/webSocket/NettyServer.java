@@ -57,7 +57,7 @@ public class NettyServer {
                         }
                     });
 
-            ChannelFuture cf = serverBootstrap.bind(7000).sync();
+            ChannelFuture cf = serverBootstrap.bind(9000).sync();
             cf.channel().closeFuture().sync();
 
 

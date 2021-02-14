@@ -1,9 +1,14 @@
 package com.zy.tcp;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
 import io.netty.util.CharsetUtil;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 1.自定义一个Handler需要继承netty规定好的某个HandlerAdapter(规范)
@@ -33,9 +38,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-//
 //            }
-//
 //        });
 //        //一个taskQueue 同一个线程，下面会在30秒后输出
 //        ctx.channel().eventLoop().execute(new Runnable() {
@@ -54,18 +57,16 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
 
         //解决方案2 用户程序自定义定时任务 -> 该任务是提交到scheduleTaskQueue中
-        //schedule() 只触发一次
-        //scheduleAtFixedRate();上一个任务开始的时间计时，period时间过去后，检测上一个任务是否执行完毕，如果上一个任务执行完毕，则当前任务立即执行，如果上一个任务没有执行完毕，则需要等上一个任务执行完毕后立即执行。
-        //scheduleWithFixedDelay();上一个任务结束时开始计时，period时间过去后，立即执行
-//        ctx.channel().eventLoop().schedule(new Runnable() {
-//            @Override
-//            public void run() {
-//                    ctx.writeAndFlush(Unpooled.copiedBuffer("Hello，客户端～（scheduleTaskQueue）1", CharsetUtil.UTF_8));
-//            }
-//
-//        },5,TimeUnit.SECONDS);
-//
-//        System.out.println("go on ...");
+//        schedule() 只触发一次
+//        scheduleAtFixedRate();上一个任务开始的时间计时，period时间过去后，检测上一个任务是否执行完毕，如果上一个任务执行完毕，则当前任务立即执行，如果上一个任务没有执行完毕，则需要等上一个任务执行完毕后立即执行。
+//        scheduleWithFixedDelay();上一个任务结束时开始计时，period时间过去后，立即执行
+        ctx.channel().eventLoop().schedule(new Runnable() {
+            @Override
+            public void run() {
+                    ctx.writeAndFlush(Unpooled.copiedBuffer("Hello，客户端～（scheduleTaskQueue）1", CharsetUtil.UTF_8));
+            }
+        },5, TimeUnit.SECONDS);
+        System.out.println("go on ...");
 
         //*****************************v1*************************************
 //        System.out.println("服务器读取线程信息：" + Thread.currentThread().getName());

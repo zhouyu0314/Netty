@@ -29,8 +29,8 @@ public class NettyByteBufDemo01 {
         for (int i = 0; i < 10; i++) {
             buffer.writeByte(i);
         }
-        System.out.println("capacity:" + buffer.capacity());
-        //输出
+        //        System.out.println("capacity:" + buffer.capacity());
+        //        //输出
         for (int i = 0; i < buffer.capacity(); i++) {
             //System.out.println(buffer.getByte(i));//指定index之后readerIndex不会变化
             System.out.println(buffer.readByte());// //每读一次readerIndex+1
